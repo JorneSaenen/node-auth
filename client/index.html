@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Node-auth</title>
+    <link rel="stylesheet" href="./style/style.css" />
+  </head>
+  <body>
+    <!-- --------- Sign up Form --------- -->
+    <div class="signup">
+      <h1>Registration Form</h1>
+      <form id="registration-form">
+        <div>
+          <label for="name">Name*</label>
+          <input type="text" name="name" required />
+        </div>
+        <div>
+          <label for="email">Email*</label>
+          <input type="email" name="email" required />
+        </div>
+        <div>
+          <label for="password">Password*</label>
+          <input type="password" name="password" required />
+        </div>
+        <button type="submit">Register</button>
+      </form>
+    </div>
+    <!-- --------- Login Form --------- -->
+    <div class="signin">
+      <h1>Login Form</h1>
+      <form id="login-form">
+        <div>
+          <label for="email">Email*</label>
+          <input type="email" name="email" required />
+        </div>
+        <div>
+          <label for="password">Password*</label>
+          <input type="password" name="password" required />
+        </div>
+        <button type="submit">Login</button>
+      </form>
+    </div>
+    <!-- --------- Logout --------- -->
+    <div class="logout">
+      <h1>Logout</h1>
+      <button id="logout-button">Logout</button>
+    <!-- --------- scripts --------- -->
+    <script src="./js/main.js" defer></script>
+  </body>
+</html>

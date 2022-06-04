@@ -5,7 +5,10 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon ./src/index.js",
+    "server": "nodemon ./src/index.js",
+    "client": "npx serve client -p 3001",
+    "caddy": "caddy run",
+    "dev": "concurrently \"npm run caddy\" \"npm run client\" \"npm run server\"",
     "start": "node ./src/index.js"
   },
   "author": "Jorne Saenen",
@@ -15,8 +18,10 @@
   },
   "dependencies": {
     "@fastify/cookie": "^6.0.0",
+    "@fastify/cors": "^7.0.0",
     "@fastify/static": "^5.0.0",
     "bcryptjs": "^2.4.3",
+    "concurrently": "^7.2.1",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
     "fastify": "^3.29.0",

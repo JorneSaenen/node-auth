@@ -2,6 +2,7 @@ import "./utils/env.js";
 import { fastify } from "fastify";
 import fastifyStatic from "@fastify/static";
 import fastifyCookie from "@fastify/cookie";
+import fastifyCors from "@fastify/cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import { connectDb } from "./utils/db.js";
@@ -27,6 +28,10 @@ const startApp = async () => {
     });
     app.register(fastifyStatic, {
       root: path.join(__dirname, "public"),
+    });
+    app.register(fastifyCors, {
+      origin: [/\.nodeauth.dev/, "https://nodeauth.dev"],
+      credentials: true,
     });
 
     // Routes

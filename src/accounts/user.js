@@ -5,6 +5,7 @@ import { createTokens } from "./tokens.js";
 const { ObjectId } = mongo;
 
 const JWTSignature = process.env.JWT_SIGNATURE;
+const { ROOT_DOMAIN } = process.env;
 
 export const getUserFromCookies = async (request, reply) => {
   try {
@@ -62,10 +63,10 @@ export const refreshTokens = async (sessionToken, userId, reply) => {
     const now = new Date();
     const refreshExpires = now.setDate(now.getDate() + 30);
 
-    // Set  Cookie
+    // Set Cookie
     reply
-      .setCookie("refreshToken", refreshToken, { path: "/", domain: "localhost", httpOnly: true, expires: refreshExpires })
-      .setCookie("accessToken", accessToken, { path: "/", domain: "localhost", httpOnly: true });
+      .setCookie("refreshToken", refreshToken, { path: "/", domain: ROOT_DOMAIN, httpOnly: true, secure: true, expires: refreshExpires })
+      .setCookie("accessToken", accessToken, { path: "/", domain: ROOT_DOMAIN, httpOnly: true, secure: true });
   } catch (error) {
     console.error(error);
   }
