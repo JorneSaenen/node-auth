@@ -1,10 +1,10 @@
-import "./env.js";
+import "./utils/env.js";
 import { fastify } from "fastify";
 import fastifyStatic from "@fastify/static";
 import fastifyCookie from "@fastify/cookie";
 import path from "path";
 import { fileURLToPath } from "url";
-import { connectDb } from "./db.js";
+import { connectDb } from "./utils/db.js";
 import { registerUser } from "./accounts/register.js";
 import { authorizeUser } from "./accounts/authorize.js";
 import { logUserIn } from "./accounts/logUserIn.js";
