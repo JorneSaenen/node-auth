@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-const JWTSignature = process.env.JWT_SIGNATURE;
+const { JWTSignature } = process.env;
 
 export const logUserOut = async (request, reply) => {
   try {

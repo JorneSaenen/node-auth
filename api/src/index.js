@@ -12,7 +12,7 @@ import { logUserIn } from "./accounts/logUserIn.js";
 import { getUserFromCookies } from "./accounts/user.js";
 import { logUserOut } from "./accounts/logUserOut.js";
 import { sendEmail, mailInit } from "./mail/index.js";
-import { createVerifyEmailLink } from "./accounts/verify.js";
+import { createVerifyEmailLink, validateVerifyEmail } from "./accounts/verify.js";
 
 // ESM speficic features
 const __filename = fileURLToPath(import.meta.url);
@@ -24,6 +24,7 @@ const app = fastify({ logger: false });
 // Start server function
 const startApp = async () => {
   try {
+    // Init mail server
     await mailInit();
 
     // Register plugins
@@ -77,6 +78,20 @@ const startApp = async () => {
       } catch (error) {
         console.error(error);
         reply.send({ data: { status: "FAILED" } });
+      }
+    });
+
+    app.post("/api/verify", {}, async (request, reply) => {
+      try {
+        const { email, token } = request.body;
+        const isValid = await validateVerifyEmail(token, email);
+        if (isValid) {
+          return reply.code(200).send();
+        }
+        return reply.code(401).send();
+      } catch (error) {
+        console.error(error);
+        return reply.code(401).send();
       }
     });
 
