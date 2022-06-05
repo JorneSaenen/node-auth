@@ -50,6 +50,8 @@ const startApp = async () => {
 
     app.get("/reset/:email/:expTimestamp/:token", {}, async (request, reply) => reply.sendFile("reset.html"));
 
+    app.get("/2fa", {}, async (request, reply) => reply.sendFile("2fa.html"));
+
     // Start server
     await app.listen(3001);
     console.log(`🚀 UI listening on ${app.server.address().port}!`);
