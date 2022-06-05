@@ -18,7 +18,7 @@ const startApp = async () => {
     });
     // Start server
     await app.listen(3001);
-    console.log(`🚀 Client listening on ${app.server.address().port}!`);
+    console.log(`🚀 UI listening on ${app.server.address().port}!`);
   } catch (error) {
     console.error({ error: err });
     app.log.error(err);
