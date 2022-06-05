@@ -4,7 +4,7 @@
   box-sizing: border-box;
 }
 
-.signup, .signin, .logout, .change {
+.signup, .signin, .logout, .change, .forgot {
   display: flex;
   flex-direction: column;
   align-items: center;
