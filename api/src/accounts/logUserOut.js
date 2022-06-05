@@ -19,20 +19,15 @@ export const logUserOut = async (request, reply) => {
         sessionToken: decodedRefreshToken.sessionToken,
       });
 
-      // Remove Cookies
-      reply
-        .clearCookie("refreshToken", {
-          path: "/",
-          domain: ROOT_DOMAIN,
-          httpOnly: true,
-          secure: true,
-        })
-        .clearCookie("accessToken", {
-          path: "/",
-          domain: ROOT_DOMAIN,
-          httpOnly: true,
-          secure: true,
-        });
+      // Remove Cookies with cookie options for cross domain communication
+      const cookieOptions = {
+        path: "/",
+        domain: ROOT_DOMAIN,
+        httpOnly: true,
+        secure: true,
+      };
+
+      reply.clearCookie("refreshToken", cookieOptions).clearCookie("accessToken", cookieOptions);
     }
   } catch (error) {
     console.error(error);
