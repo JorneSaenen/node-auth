@@ -6,7 +6,7 @@ export const authorizeUser = async (email, password) => {
   const { user } = await import("../models/user/user.js");
   try {
     // get user from db
-    const userFromDb = await user.findOne({ "email.adress": email });
+    const userFromDb = await user.findOne({ "email.address": email });
     if (userFromDb) {
       // get password
       const passwordFromDb = userFromDb?.password;

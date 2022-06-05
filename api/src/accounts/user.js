@@ -1,7 +1,8 @@
 import mongo from "mongodb";
 import jwt from "jsonwebtoken";
 import { createTokens } from "./tokens.js";
-
+import bcrypt from "bcryptjs";
+const { genSalt, hash } = bcrypt;
 const { ObjectId } = mongo;
 
 const JWTSignature = process.env.JWT_SIGNATURE;
@@ -67,6 +68,25 @@ export const refreshTokens = async (sessionToken, userId, reply) => {
     reply
       .setCookie("refreshToken", refreshToken, { path: "/", domain: ROOT_DOMAIN, httpOnly: true, secure: true, expires: refreshExpires })
       .setCookie("accessToken", accessToken, { path: "/", domain: ROOT_DOMAIN, httpOnly: true, secure: true });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const changePassword = async (userId, newPassword) => {
+  try {
+    // Dynamic imports
+    const { user } = await import("../models/user/user.js");
+
+    // generate salt
+    const salt = await genSalt(10);
+
+    // hash new password with salt
+    const hashedPassword = await hash(newPassword, salt);
+
+    // Update password
+    const updatedUser = await user.updateOne({ _id: ObjectId(userId) }, { $set: { password: hashedPassword } });
+    return updatedUser;
   } catch (error) {
     console.error(error);
   }

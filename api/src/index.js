@@ -9,7 +9,7 @@ import { connectDb } from "./utils/db.js";
 import { registerUser } from "./accounts/register.js";
 import { authorizeUser } from "./accounts/authorize.js";
 import { logUserIn } from "./accounts/logUserIn.js";
-import { getUserFromCookies } from "./accounts/user.js";
+import { getUserFromCookies, changePassword } from "./accounts/user.js";
 import { logUserOut } from "./accounts/logUserOut.js";
 import { sendEmail, mailInit } from "./mail/index.js";
 import { createVerifyEmailLink, validateVerifyEmail } from "./accounts/verify.js";
@@ -71,13 +71,28 @@ const startApp = async () => {
       }
     });
 
-    app.post("/api/logout", {}, async (request, reply) => {
+    app.post("/api/change-password", {}, async (request, reply) => {
       try {
-        await logUserOut(request, reply);
-        reply.send({ data: { status: "SUCCESS" } });
+        const { oldPassword, newPassword } = request.body;
+
+        // Verify User login
+        const user = await getUserFromCookies(request);
+        console.log(user);
+        if (user?.email?.address) {
+          // Compare current logged in user with form to re-auth
+          const { isAuthorized, userId } = await authorizeUser(user.email.address, oldPassword);
+
+          // If user is authorized, change password
+          if (isAuthorized) {
+            // Hash new password and change password in database
+            await changePassword(userId, newPassword);
+            return reply.code(200).send();
+          }
+        }
+        return reply.code(401).send();
       } catch (error) {
         console.error(error);
-        reply.send({ data: { status: "FAILED" } });
+        return reply.code(401).send();
       }
     });
 
@@ -92,6 +107,16 @@ const startApp = async () => {
       } catch (error) {
         console.error(error);
         return reply.code(401).send();
+      }
+    });
+
+    app.post("/api/logout", {}, async (request, reply) => {
+      try {
+        await logUserOut(request, reply);
+        reply.send({ data: { status: "SUCCESS" } });
+      } catch (error) {
+        console.error(error);
+        reply.send({ data: { status: "FAILED" } });
       }
     });
 

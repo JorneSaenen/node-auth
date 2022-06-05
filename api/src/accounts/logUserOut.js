@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-const { JWTSignature } = process.env;
+const { JWT_SIGNATURE, ROOT_DOMAIN } = process.env;
 
 export const logUserOut = async (request, reply) => {
   try {
@@ -12,7 +12,7 @@ export const logUserOut = async (request, reply) => {
       const { refreshToken } = request.cookies;
 
       // Decode SessionToken from refreshToken
-      const decodedRefreshToken = jwt.verify(refreshToken, JWTSignature);
+      const decodedRefreshToken = jwt.verify(refreshToken, JWT_SIGNATURE);
 
       // Delete database record for session
       await session.deleteOne({
@@ -20,7 +20,19 @@ export const logUserOut = async (request, reply) => {
       });
 
       // Remove Cookies
-      reply.clearCookie("refreshToken").clearCookie("accessToken");
+      reply
+        .clearCookie("refreshToken", {
+          path: "/",
+          domain: ROOT_DOMAIN,
+          httpOnly: true,
+          secure: true,
+        })
+        .clearCookie("accessToken", {
+          path: "/",
+          domain: ROOT_DOMAIN,
+          httpOnly: true,
+          secure: true,
+        });
     }
   } catch (error) {
     console.error(error);

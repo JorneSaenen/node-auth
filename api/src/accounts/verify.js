@@ -37,7 +37,7 @@ export const validateVerifyEmail = async (token, email) => {
     if (isValid) {
       // if Successful, update user to verified
       const { user } = await import("../models/user/user.js");
-      await user.updateOne({ "email.adress": email }, { $set: { "email.verified": true } });
+      await user.updateOne({ "email.address": email }, { $set: { "email.verified": true } });
       return true;
     }
 

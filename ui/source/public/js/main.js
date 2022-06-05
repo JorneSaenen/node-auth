@@ -58,13 +58,40 @@ loginForm.addEventListener("submit", async (e) => {
   }
 });
 
+// Change Password Function
+const changePassword = document.querySelector("#change-form");
+changePassword.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  try {
+    const values = Object.values(changePassword).reduce((obj, field) => {
+      if (field.name) {
+        obj[field.name] = field.value;
+      }
+      return obj;
+    }, {});
+    await fetch(`${baseUrl}/api/change-password`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        charset: "utf-8",
+      },
+      body: JSON.stringify(values),
+    });
+    changePassword.reset();
+  } catch (error) {
+    console.error(error);
+    changePassword.reset();
+  }
+});
+
 // Logout Function
 const logoutBtn = document.querySelector("#logout-button");
 const logout = async () => {
   try {
     await fetch(`${baseUrl}/api/logout`, {
-      credentials: "include",
       method: "POST",
+      credentials: "include",
     });
   } catch (error) {
     console.error(error);

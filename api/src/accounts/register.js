@@ -15,7 +15,7 @@ export const registerUser = async (name, email, password) => {
   const result = await user.insertOne({
     name,
     email: {
-      adress: email,
+      address: email,
       verified: false,
     },
     password: hashedPassword,
