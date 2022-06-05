@@ -12,6 +12,7 @@ import { logUserIn } from "./accounts/logUserIn.js";
 import { getUserFromCookies } from "./accounts/user.js";
 import { logUserOut } from "./accounts/logUserOut.js";
 import { sendEmail, mailInit } from "./mail/index.js";
+import { createVerifyEmailLink } from "./accounts/verify.js";
 
 // ESM speficic features
 const __filename = fileURLToPath(import.meta.url);
@@ -24,10 +25,7 @@ const app = fastify({ logger: false });
 const startApp = async () => {
   try {
     await mailInit();
-    // await sendEmail({
-    //   subject: "Test email",
-    //   html: "<h1>Test email</h1>",
-    // });
+
     // Register plugins
     app.register(fastifyCookie, {
       secret: process.env.COOKIE_SIGNATURE,
@@ -45,7 +43,10 @@ const startApp = async () => {
       const { email, password, name } = request.body;
       try {
         const userId = await registerUser(name, email, password);
+        // If account creations was successful, send verification email
         if (userId) {
+          const emailLink = await createVerifyEmailLink(email);
+          await sendEmail({ to: email, subject: "Test email", html: `<a href="${emailLink}">Verify</a>` });
           await logUserIn(userId, request, reply);
           reply.send({ data: { status: "SUCCESS", userId } });
         }
