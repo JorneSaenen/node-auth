@@ -11,6 +11,7 @@ import { authorizeUser } from "./accounts/authorize.js";
 import { logUserIn } from "./accounts/logUserIn.js";
 import { getUserFromCookies } from "./accounts/user.js";
 import { logUserOut } from "./accounts/logUserOut.js";
+import { sendEmail, mailInit } from "./mail/index.js";
 
 // ESM speficic features
 const __filename = fileURLToPath(import.meta.url);
@@ -22,6 +23,11 @@ const app = fastify({ logger: false });
 // Start server function
 const startApp = async () => {
   try {
+    await mailInit();
+    // await sendEmail({
+    //   subject: "Test email",
+    //   html: "<h1>Test email</h1>",
+    // });
     // Register plugins
     app.register(fastifyCookie, {
       secret: process.env.COOKIE_SIGNATURE,
