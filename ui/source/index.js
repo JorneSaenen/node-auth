@@ -48,6 +48,8 @@ const startApp = async () => {
       }
     });
 
+    app.get("/reset/:email/:expTimestamp/:token", {}, async (request, reply) => reply.sendFile("reset.html"));
+
     // Start server
     await app.listen(3001);
     console.log(`🚀 UI listening on ${app.server.address().port}!`);

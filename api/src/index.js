@@ -13,6 +13,7 @@ import { getUserFromCookies, changePassword } from "./accounts/user.js";
 import { logUserOut } from "./accounts/logUserOut.js";
 import { sendEmail, mailInit } from "./mail/index.js";
 import { createVerifyEmailLink, validateVerifyEmail } from "./accounts/verify.js";
+import { createResetLink, validateResetEmail } from "./accounts/reset.js";
 
 // ESM speficic features
 const __filename = fileURLToPath(import.meta.url);
@@ -104,6 +105,49 @@ const startApp = async () => {
           return reply.code(200).send();
         }
         return reply.code(401).send();
+      } catch (error) {
+        console.error(error);
+        return reply.code(401).send();
+      }
+    });
+
+    app.post("/api/forgot-password", {}, async (request, reply) => {
+      try {
+        const { email } = request.body;
+        const link = await createResetLink(email);
+
+        // If link/user exist send email with reset link
+        if (link) {
+          await sendEmail({
+            to: email,
+            subject: "Reset your password",
+            html: `<a href="${link}">Reset</a>`,
+          });
+        }
+
+        // Always return 200
+        return reply.code(200).send();
+      } catch (error) {
+        console.error(error);
+        return reply.code(401).send();
+      }
+    });
+
+    app.post("/api/reset", {}, async (request, reply) => {
+      try {
+        const { email, token, password, time } = request.body;
+        const isValid = await validateResetEmail(token, email, time);
+        if (isValid) {
+          // Find current user with email
+          const { user } = await import("./models/user/user.js");
+          const foundUser = await user.findOne({ "email.address": email });
+          if (foundUser._id) {
+            // Change password
+            await changePassword(foundUser._id, password);
+            return reply.code(200).send("Password updated");
+          }
+        }
+        return reply.code(401).send("Reset Failed");
       } catch (error) {
         console.error(error);
         return reply.code(401).send();

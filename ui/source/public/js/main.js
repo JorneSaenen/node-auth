@@ -67,11 +67,11 @@ changePassword.addEventListener("submit", async (e) => {
 });
 
 // Forgot Password Function
-const forgotPassword = document.querySelector("#forgot-password-form");
-forgotPassword.addEventListener("submit", async (e) => {
+const forgotForm = document.querySelector("#forgot-password-form");
+forgotForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   try {
-    const values = getValues(forgotPassword);
+    const values = getValues(forgotForm);
     await fetch(`${baseUrl}/api/forgot-password`, {
       method: "POST",
       credentials: "include",
@@ -81,9 +81,9 @@ forgotPassword.addEventListener("submit", async (e) => {
       },
       body: JSON.stringify(values),
     });
-    forgotPassword.reset();
+    forgotForm.reset();
   } catch (error) {
-    forgotPassword.reset();
+    forgotForm.reset();
     console.error(error);
   }
 });
