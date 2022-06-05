@@ -13,6 +13,13 @@
   <body>
     <h1>2FA</h1>
     <div id="qr-wrapper"></div>
+    <div class="token-2fa">
+      <form id="token">
+        <label for="token">2FA Token</label>
+        <input type="text" name="token" required />
+        <button type="submit">Submit</button>
+      </form>
+    </div>
     <!-- --------- scripts --------- -->
     <script src="/js/2fa.js" type="module" defer></script>
   </body>

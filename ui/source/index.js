@@ -4,13 +4,14 @@ import fetch from "cross-fetch";
 import fastifyStatic from "@fastify/static";
 import path from "path";
 import { fileURLToPath } from "url";
+const apiBaseUrl = "https://api.nodeauth.dev";
 
 // ESM speficic features
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Init Fastify
-const app = fastify({ logger: false });
+const app = fastify();
 
 const startApp = async () => {
   try {
@@ -27,7 +28,7 @@ const startApp = async () => {
         // Allows calls from one server to another over https
         const httpsAgent = new https.Agent({ rejectUnauthorized: false });
 
-        const response = await fetch("https://api.nodeauth.dev/api/verify", {
+        const response = await fetch(`${apiBaseUrl}/api/verify`, {
           method: "POST",
           credentials: "include",
           agent: httpsAgent,

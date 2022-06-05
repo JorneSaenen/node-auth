@@ -91,3 +91,16 @@ export const changePassword = async (userId, newPassword) => {
     console.error(error);
   }
 };
+
+export const register2fa = async (userId, secret) => {
+  try {
+    // Dynamic imports
+    const { user } = await import("../models/user/user.js");
+
+    // Update authenticator to user
+    const updatedUser = await user.updateOne({ _id: ObjectId(userId) }, { $set: { authenticator: secret } });
+    return updatedUser;
+  } catch (error) {
+    console.error(error);
+  }
+};
