@@ -76,11 +76,18 @@ const startApp = async () => {
     app.post("/api/authorize", {}, async (request, reply) => {
       const { email, password } = request.body;
       try {
-        const { isAuthorized, userId } = await authorizeUser(email, password);
-        if (isAuthorized) {
+        const { isAuthorized, userId, authenticatorSecret } = await authorizeUser(email, password);
+
+        // If account is authorized, log user in
+        if (isAuthorized && !authenticatorSecret) {
           await logUserIn(userId, request, reply);
           reply.send({ data: { status: "SUCCESS", userId } });
         }
+        // If account is authorized, but 2fa is enabled, send 2fa code
+        else if (isAuthorized && authenticatorSecret) {
+          reply.send({ data: { status: "2FA" } });
+        }
+        reply.status(401).send();
       } catch (error) {
         console.error(error);
         reply.send({ data: { status: "FAILED", userId } });
@@ -195,7 +202,23 @@ const startApp = async () => {
         return reply.code(401).send();
       }
     });
+    app.post("/api/verify-2fa", {}, async (request, reply) => {
+      try {
+        const { token, email, password } = request.body;
+        const { isAuthorized, userId, authenticatorSecret } = await authorizeUser(email, password);
+        const isValid = authenticator.verify({ token, secret: authenticatorSecret });
 
+        if (isAuthorized && isValid && userId) {
+          await logUserIn(userId, request, reply);
+          return reply.status(200).send();
+        }
+
+        return reply.code(401).send();
+      } catch (error) {
+        console.error(error);
+        return reply.code(401).send();
+      }
+    });
     app.get("/test", {}, async (request, reply) => {
       try {
         // Verify user login

@@ -16,7 +16,7 @@ import { getValues, baseUrl } from "./helpers.js";
   if (userData?.data?.user?.email?.address) {
     // Create QR code
     const secret = otplib.authenticator.generateSecret();
-    const otpauth = otplib.authenticator.keyuri(userData.email, "JSJJ Auth", secret);
+    const otpauth = otplib.authenticator.keyuri(userData?.data?.user?.email?.address, "JSJJ Auth", secret);
     const imageURL = await QRCode.toDataURL(otpauth);
 
     // Display QR code

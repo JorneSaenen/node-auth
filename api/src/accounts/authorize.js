@@ -6,16 +6,16 @@ export const authorizeUser = async (email, password) => {
   const { user } = await import("../models/user/user.js");
   try {
     // get user from db
-    const userFromDb = await user.findOne({ "email.address": email });
-    if (userFromDb) {
+    const userData = await user.findOne({ "email.address": email });
+    if (userData) {
       // get password
-      const passwordFromDb = userFromDb?.password;
+      const savedPassword = userData?.password;
 
       // compare password
-      const isAuthorized = await compare(password, passwordFromDb);
+      const isAuthorized = await compare(password, savedPassword);
 
       // return boolean of isAuthorized
-      return { isAuthorized, userId: userFromDb._id };
+      return { isAuthorized, userId: userData._id, authenticatorSecret: userData.authenticator };
     } else {
       throw new Error("User not found");
     }
