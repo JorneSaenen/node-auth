@@ -28,7 +28,7 @@ loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   try {
     const values = getValues(loginForm);
-    await fetch(`${baseUrl}/api/authorize`, {
+    const response = await fetch(`${baseUrl}/api/authorize`, {
       method: "POST",
       credentials: "include",
       headers: {
@@ -37,6 +37,35 @@ loginForm.addEventListener("submit", async (e) => {
       },
       body: JSON.stringify(values),
     });
+    const {
+      data: { status },
+    } = await response.json();
+
+    if (status === "2FA") {
+      loginForm.reset();
+      const tokenForm = document.querySelector("#token-form");
+
+      tokenForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        try {
+          const tokenvalue = getValues(tokenForm);
+
+          await fetch(`${baseUrl}/api/verify-2fa`, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+              charset: "utf-8",
+            },
+            body: JSON.stringify({ ...tokenvalue, ...values }),
+          });
+          tokenForm.reset();
+        } catch (error) {
+          console.error(error);
+          tokenForm.reset();
+        }
+      });
+    }
     loginForm.reset();
   } catch (error) {
     console.error(error);
