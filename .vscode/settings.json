@@ -1,0 +1,14 @@
+{
+  "editor.fontSize": 18,
+  "editor.tokenColorCustomizations": {
+    "comments": "#b3ff00",
+    "textMateRules": [
+      {
+        "scope": ["comment.block", "comment.line", "comment.block.documentation", "comment.line.documentation", "punctuation.definition.comment"],
+        "settings": {
+          "foreground": "#b3ff00"
+        }
+      }
+    ]
+  }
+}
