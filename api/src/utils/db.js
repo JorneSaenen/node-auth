@@ -2,7 +2,7 @@ import mongo from "mongodb";
 
 const { MongoClient } = mongo;
 
-const url = encodeURI(process.env.MONGO_URL);
+const url = encodeURI(process.env.MONGO_URL_LOCAL);
 
 export const client = new MongoClient(url, { useNewUrlParser: true });
 

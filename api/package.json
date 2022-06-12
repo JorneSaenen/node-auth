@@ -5,12 +5,13 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon ./src/index.js",
+    "dev": "concurrently \"nodemon ./src/index.js\" \"cd .. && caddy run\"",
     "start": "node ./src/index.js"
   },
   "author": "Jorne Saenen",
   "license": "ISC",
   "devDependencies": {
+    "concurrently": "^7.2.1",
     "nodemon": "^2.0.16"
   },
   "dependencies": {
